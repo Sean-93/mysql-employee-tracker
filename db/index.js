@@ -13,16 +13,18 @@ class Database {
     addRoles(role){
         return this.connection.query("INSERT INTO role SET ?", role)
     }
-    viewAllEmployeesByDepartment(){
-        return this.connection.query("SELECT department.id, department.name FROM employee LEFT JOIN role ON emloyee.role_id = role.id LEFT JOIN department ON role.department_id = department.id")
+    viewAllEmployees(){
+        return this.connection.query("SELECT first_name, last_name, department.id, department.name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY department.id, department.name")
     }
-    // viewDepartments(){
-    //     return this.
-    // }
-    // viewRoles(){
-    //     return this.
-    // }
-    // updateEmployeeRoles(){
-    //     return this.
-    // }
+    viewDepartments(){
+        return this.connection.query("SELECT * FROM department")
+    }
+    viewRoles(){
+        return this.connection.query("SELECT role.id, role.title, department.name as department_name FROM role LEFT JOIN department ON role.department_id = department.id")
+    }
+    updateEmployeeRole(employeeId, roleId){
+        return this.connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [roleId, employeeId])
+    }
 }
+
+module.exports = new Database(connection);

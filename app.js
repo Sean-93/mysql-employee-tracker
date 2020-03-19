@@ -31,7 +31,7 @@ async function decideAction() {
     case "addEmployees":
       return createEmployee();
     case "viewDepartments":
-      return viewDepartments();
+      return seeDepartments();
     case "viewRoles":
       return seeRole();
     case "viewEmployees":
@@ -69,7 +69,14 @@ function createDepartment() {
     });
 }
 
-function createRole() {
+async function createRole() {
+  const departments = await database.viewDepartments();
+  const jsonDepartmentsObject = JSON.parse(JSON.stringify(departments));
+  const departmentChoices = [];
+  jsonDepartmentsObject.forEach(element => {
+    const choice = {name: element.name, value: element.id};
+    departmentChoices.push(choice);
+  });
   inquirer
     .prompt([
       {
@@ -78,9 +85,10 @@ function createRole() {
         message: "Please add a role title."
       },
       {
-        type: "input",
+        type: "list",
         name: "departmentID",
-        message: "Please add a role department ID."
+        message: "Please add a role department ID.",
+        choices: departmentChoices
       }
     ])
     .then(function(data) {

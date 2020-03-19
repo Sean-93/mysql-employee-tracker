@@ -93,7 +93,14 @@ function createRole() {
     });
 }
 
-function createEmployee() {
+async function createEmployee() {
+  const role = await database.viewRoles();
+  const jsonRoleObject = JSON.parse(JSON.stringify(role));
+  const roleChoices = [];
+  jsonRoleObject.forEach(element => {
+    const choice = {name: element.title, value: element.id};
+    roleChoices.push(choice);
+  });
   inquirer
     .prompt([
       {
@@ -107,9 +114,10 @@ function createEmployee() {
         message: "Please add the employee's last name."
       },
       {
-        type: "number",
+        type: "list",
         name: "roleID",
-        message: "Please enter the employee's role id."
+        message: "Please enter the employee's role id.",
+        choices: roleChoices
       },
       {
         type: "input",
@@ -191,8 +199,8 @@ async function updateEmployeeRole() {
       
     }
   ]).then (function(data) {
-    console.log(data.updateEmployeeRole);
-    console.log(data.chooseRoleToUpdate);
+    // console.log(data.updateEmployeeRole);
+    // console.log(data.chooseRoleToUpdate);
     database.updateEmployeeRole(data.updateEmployeeRole, data.chooseRoleToUpdate);
     seeEmployees();
     decideAction();

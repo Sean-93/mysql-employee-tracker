@@ -3,6 +3,54 @@
 const inquirer = require("inquirer");
 const database = require("./db/index");
 
+async function decideAction() {
+  const { answerChoice } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "answerChoice",
+      message: "What action would you like to make?",
+      choices: [
+        { name: "Add departments", value: "addDepartments" },
+        { name: "Add roles", value: "addRoles" },
+        { name: "Add employees", value: "addEmployees" },
+        { name: "View departments", value: "viewDepartments" },
+        { name: "View roles", value: "viewRoles" },
+        { name: "View employees", value: "viewEmployees" },
+        { name: "Update employee roles", value: "updateEmployeeRole" },
+        { name: "Quit application", value: "quitApplication" }
+      ]
+    }
+  ]);
+  console.log(answerChoice);
+
+  switch (answerChoice) {
+    case "addDepartments":
+      return createDepartment();
+    case "addRoles":
+      return createRole();
+    case "addEmployees":
+      return createEmployee();
+    case "viewDepartments":
+      return viewDepartments();
+    case "viewRoles":
+      return seeRole();
+    case "viewEmployees":
+      return seeEmployee();
+    case "updateEmployeeRole":
+      return;
+    default: 
+      // return quitApplicaton();
+  }
+}
+
+// * The command-line application should allow users to:
+
+//   * Add departments, roles, employees
+
+//   * View departments, roles, employees
+
+//   * Update employee roles
+
 function createDepartment() {
   inquirer
     .prompt([
@@ -64,49 +112,51 @@ function createEmployee() {
       {
         type: "input",
         name: "managerID",
-        message: "If employee has a manager, enter the manager's ID; if they are the manager, leave blank and enter."
+        message:
+          "If employee has a manager, enter the manager's ID; if they are the manager, leave blank and enter."
       }
     ])
     .then(function(data) {
       const add = {
         first_name: data.firstName,
         last_name: data.lastName,
-        role_id: data.roleID,
-    };
+        role_id: data.roleID
+      };
 
-    if (data.managerID) {
+      if (data.managerID) {
         add.manager_id = data.managerID;
-    }
+      }
 
-    database.addEmployees(add);
-});
+      database.addEmployees(add);
+    });
 }
 // manager_id: data.managerID
 
-async function seeDepartments(){
-    const departments = await database.viewDepartments();
-    const jsonString = JSON.stringify(departments);
-    console.table(JSON.parse(jsonString));
+async function seeDepartments() {
+  const departments = await database.viewDepartments();
+  const jsonString = JSON.stringify(departments);
+  console.table(JSON.parse(jsonString));
 }
 
-async function seeEmployee(){
-    const employees = await database.viewAllEmployees();
-    const jsonString = JSON.stringify(employees);
-    console.table(JSON.parse(jsonString));
+async function seeEmployee() {
+  const employees = await database.viewAllEmployees();
+  const jsonString = JSON.stringify(employees);
+  console.table(JSON.parse(jsonString));
 }
 
-async function seeRole(){
-    const roles = await database.viewRoles();
-    const jsonString = JSON.stringify(roles);
-    console.table(JSON.parse(jsonString));
+async function seeRole() {
+  const roles = await database.viewRoles();
+  const jsonString = JSON.stringify(roles);
+  console.table(JSON.parse(jsonString));
 }
 
 function start() {
-//   createDepartment();
-//   seeDepartments();
-//   createRole();
-//   seeRole();
-  seeEmployee();
-//   createEmployee();
+  //   createDepartment();
+  //   seeDepartments();
+  //   createRole();
+  //   seeRole();
+  // seeEmployee();
+  //   createEmployee();
+  decideAction();
 }
 start();

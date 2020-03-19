@@ -39,7 +39,7 @@ async function decideAction() {
     case "updateEmployeeRole":
       return updateEmployeeRole();
     default:
-    // return quitApplicaton();
+     return quitApplication();
   }
 }
 
@@ -198,6 +198,10 @@ async function updateEmployeeRole() {
     decideAction();
   });
 }
+
+function quitApplication(){
+  console.log("Press Ctrl + C to quit application." )
+};
 
 function start() {
   //   createDepartment();

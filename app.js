@@ -35,11 +35,11 @@ async function decideAction() {
     case "viewRoles":
       return seeRole();
     case "viewEmployees":
-      return seeEmployee();
+      return seeEmployees();
     case "updateEmployeeRole":
-      return;
-    default: 
-      // return quitApplicaton();
+      return updateEmployeeRole();
+    default:
+    // return quitApplicaton();
   }
 }
 
@@ -65,6 +65,7 @@ function createDepartment() {
         name: data.department
       };
       database.addDepartments(add);
+      decideAction();
     });
 }
 
@@ -88,6 +89,7 @@ function createRole() {
         department_id: data.departmentID
       };
       database.addRoles(add);
+      decideAction();
     });
 }
 
@@ -128,6 +130,7 @@ function createEmployee() {
       }
 
       database.addEmployees(add);
+      decideAction();
     });
 }
 // manager_id: data.managerID
@@ -136,18 +139,64 @@ async function seeDepartments() {
   const departments = await database.viewDepartments();
   const jsonString = JSON.stringify(departments);
   console.table(JSON.parse(jsonString));
+  decideAction();
 }
 
-async function seeEmployee() {
+async function seeEmployees() {
   const employees = await database.viewAllEmployees();
   const jsonString = JSON.stringify(employees);
   console.table(JSON.parse(jsonString));
+  decideAction();
 }
 
 async function seeRole() {
   const roles = await database.viewRoles();
   const jsonString = JSON.stringify(roles);
   console.table(JSON.parse(jsonString));
+  decideAction();
+}
+
+async function updateEmployeeRole() {
+  const employees = await database.viewAllEmployees();
+  const jsonEmployeeString = JSON.stringify(employees);
+  const jsonToObject = JSON.parse(jsonEmployeeString);
+  const employeeChoices = [];
+  jsonToObject.forEach(element => {
+    const choice = {name: `${element.first_name} ${element.last_name}`, value: element.employee_id };
+    employeeChoices.push(choice);
+  });
+
+
+  const role = await database.viewRoles();
+  const jsonRoleObject = JSON.parse(JSON.stringify(role));
+  const roleChoices = [];
+  jsonRoleObject.forEach(element => {
+    const choice = {name: element.title, value: element.id};
+    roleChoices.push(choice);
+  })
+
+
+  inquirer.prompt([
+    {
+      type: "list",
+      name: "updateEmployeeRole",
+      message: "Which employee would you like to update?",
+      choices: employeeChoices
+    },
+    {
+      type: "list",
+      name: "chooseRoleToUpdate",
+      message: "What role would you like to update the selected employee to?",
+      choices: roleChoices
+      
+    }
+  ]).then (function(data) {
+    console.log(data.updateEmployeeRole);
+    console.log(data.chooseRoleToUpdate);
+    database.updateEmployeeRole(data.updateEmployeeRole, data.chooseRoleToUpdate);
+    seeEmployees();
+    decideAction();
+  });
 }
 
 function start() {
@@ -155,7 +204,7 @@ function start() {
   //   seeDepartments();
   //   createRole();
   //   seeRole();
-  // seeEmployee();
+  //   seeEmployees();
   //   createEmployee();
   decideAction();
 }

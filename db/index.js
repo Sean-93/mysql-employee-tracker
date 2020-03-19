@@ -14,7 +14,7 @@ class Database {
         return this.connection.query("INSERT INTO role SET ?", role)
     }
     viewAllEmployees(){
-        return this.connection.query("SELECT first_name, last_name, department.id, department.name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY department.id, department.name")
+        return this.connection.query("SELECT employee.id AS employee_id, first_name, last_name, department.id AS department_id, department.name AS department_name, role.title AS role_title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY department.id, department.name")
     }
     viewDepartments(){
         return this.connection.query("SELECT * FROM department")

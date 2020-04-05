@@ -126,13 +126,8 @@ async function createEmployee() {
         name: "roleID",
         message: "Please enter the employee's role id.",
         choices: roleChoices
-      },
-      {
-        type: "input",
-        name: "managerID",
-        message:
-          "If employee has a manager, enter the manager's ID; if they are the manager, leave blank and enter."
       }
+      
     ])
     .then(function(data) {
       const add = {
@@ -149,7 +144,7 @@ async function createEmployee() {
       decideAction();
     });
 }
-// manager_id: data.managerID
+
 
 async function seeDepartments() {
   const departments = await database.viewDepartments();
@@ -207,8 +202,6 @@ async function updateEmployeeRole() {
       
     }
   ]).then (function(data) {
-    // console.log(data.updateEmployeeRole);
-    // console.log(data.chooseRoleToUpdate);
     database.updateEmployeeRole(data.updateEmployeeRole, data.chooseRoleToUpdate);
     seeEmployees();
     decideAction();
@@ -220,12 +213,6 @@ function quitApplication(){
 };
 
 function start() {
-  //   createDepartment();
-  //   seeDepartments();
-  //   createRole();
-  //   seeRole();
-  //   seeEmployees();
-  //   createEmployee();
   decideAction();
 }
 start();
